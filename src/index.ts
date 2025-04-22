@@ -1,4 +1,4 @@
-import {create} from "zustand";
+import {create, UseBoundStore, StoreApi} from "zustand";
 import {FormFieldValidator, requiredValidator} from "./validators";
 import {AVAILABLE_LOCALES, Locale} from "./locale/type";
 
@@ -114,7 +114,7 @@ type FormSettingsType = { // ValidationTriggersSettingType &
  * @param form Form validation definition
  * @param settings Settings for form
  */
-export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, settings?: FormSettingsType) => {
+export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, settings?: FormSettingsType): UseBoundStore<StoreApi<FormType<T>>> => {
     let locale: Locale = (settings?.locale || navigator?.language?.split('-')[0] || 'en') as Locale
 
     if (AVAILABLE_LOCALES.indexOf(locale) === -1)

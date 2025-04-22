@@ -1,3 +1,4 @@
+import { UseBoundStore, StoreApi } from "zustand";
 import { FormFieldValidator } from "./validators";
 import { Locale } from "./locale/type";
 type FormBindMetaType = {
@@ -66,6 +67,6 @@ type FormSettingsType = {
  * @param form Form validation definition
  * @param settings Settings for form
  */
-export declare const createFormValidator: <T extends object>(form: FormCreatorArgs<T>, settings?: FormSettingsType) => import("zustand").UseBoundStore<import("zustand").StoreApi<FormType<T>>>;
+export declare const createFormValidator: <T extends object>(form: FormCreatorArgs<T>, settings?: FormSettingsType) => UseBoundStore<StoreApi<FormType<T>>>;
 export declare const setDefaultLocale: (locale: Locale) => "en" | "ru";
 export {};
