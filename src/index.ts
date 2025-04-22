@@ -1,7 +1,6 @@
 import {create} from "zustand";
-import * as locales from './locale'
 import {FormFieldValidator, requiredValidator} from "./validators";
-import {AVAILABLE_LOCALES, Locale, Localization} from "./locale/type";
+import {AVAILABLE_LOCALES, Locale} from "./locale/type";
 
 
 type FormBindMetaType = {

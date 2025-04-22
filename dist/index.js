@@ -1,19 +1,16 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.setDefaultLocale = exports.createFormValidator = void 0;
-const zustand_1 = require("zustand");
-const validators_1 = require("./validators");
-const type_1 = require("./locale/type");
+import { create } from "zustand";
+import { requiredValidator } from "./validators";
+import { AVAILABLE_LOCALES } from "./locale/type";
 /**
  * Generate form validation zustand store
  *
  * @param form Form validation definition
  * @param settings Settings for form
  */
-const createFormValidator = (form, settings) => {
+export const createFormValidator = (form, settings) => {
     var _a;
     let locale = ((settings === null || settings === void 0 ? void 0 : settings.locale) || ((_a = navigator === null || navigator === void 0 ? void 0 : navigator.language) === null || _a === void 0 ? void 0 : _a.split('-')[0]) || 'en');
-    if (type_1.AVAILABLE_LOCALES.indexOf(locale) === -1)
+    if (AVAILABLE_LOCALES.indexOf(locale) === -1)
         locale = 'en';
     const getInitialValues = () => Object
         .keys(form)
@@ -24,7 +21,7 @@ const createFormValidator = (form, settings) => {
     const getInitialValidFlags = () => Object
         .keys(form)
         .reduce((aggregatedObj, field) => (Object.assign(Object.assign({}, aggregatedObj), { [field]: false })), {});
-    return (0, zustand_1.create)((set, get) => ({
+    return create((set, get) => ({
         locale,
         setLocale: (locale) => set(() => ({ locale })),
         isValid: () => {
@@ -62,7 +59,7 @@ const createFormValidator = (form, settings) => {
                 // region Collect validators for field
                 let validators = [];
                 if (form[field].required)
-                    validators.push(validators_1.requiredValidator);
+                    validators.push(requiredValidator);
                 validators = [
                     ...validators,
                     ...form[field].rules || [],
@@ -92,8 +89,6 @@ const createFormValidator = (form, settings) => {
         }
     }));
 };
-exports.createFormValidator = createFormValidator;
-const setDefaultLocale = (locale) => 
+export const setDefaultLocale = (locale) => 
 // @ts-ignore
 window.___zustand_forms__default_locale = locale;
-exports.setDefaultLocale = setDefaultLocale;
