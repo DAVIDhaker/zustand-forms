@@ -1,6 +1,6 @@
 import {create, UseBoundStore, StoreApi} from "zustand";
-import {FormFieldValidator, requiredValidator} from "./validators";
 import {AVAILABLE_LOCALES, Locale} from "./locale/type";
+import {FormFieldValidator, requiredValidator} from "./validators";
 
 
 type FormBindMetaType = {

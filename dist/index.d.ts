@@ -1,6 +1,6 @@
 import { UseBoundStore, StoreApi } from "zustand";
-import { FormFieldValidator } from "./validators";
 import { Locale } from "./locale/type";
+import { FormFieldValidator } from "./validators";
 type FormBindMetaType = {
     onBlur: () => void;
     onChange: (to: any) => void;

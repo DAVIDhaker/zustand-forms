@@ -5,5 +5,5 @@ import * as locale from './locale';
  */
 export function _(alias) {
     // @ts-ignore
-    return locale[(this === null || this === void 0 ? void 0 : this.locale) || window.___zustand_forms__default_locale || 'en'][alias];
+    return locale[this?.locale || window.___zustand_forms__default_locale || 'en'][alias];
 }

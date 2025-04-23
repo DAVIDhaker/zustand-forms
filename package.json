@@ -1,6 +1,6 @@
 {
   "name": "zustand-forms",
-  "version": "0.2.3",
+  "version": "0.2.3.1",
   "description": "Form validator for Zustand",
   "scripts": {
     "build": "npx tsc"
@@ -9,22 +9,23 @@
     "type": "git",
     "url": "github.com/davidhaker/zustand-forms"
   },
-  "types": "dist/index.d.ts",
+
   "exports": {
     "./package.json": "./package.json",
     ".": {
-      "default": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
-      }
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
     },
-    "./dist/validators": {
-      "default": {
-        "types": "./dist/validators.d.ts",
-        "default": "./dist/validators.js"
-      }
+    "./validators": {
+      "types": "./dist/validators.d.ts",
+      "import": "./dist/validators.js"
+    },
+    "./locale/type": {
+      "types": "./dist/locale/type.d.ts",
+      "import": "./dist/locale/type.js"
     }
   },
+
   "type": "module",
   "keywords": [
     "zustand",
