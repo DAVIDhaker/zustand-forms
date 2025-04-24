@@ -39,13 +39,16 @@ export const createFormValidator = (form, settings) => {
                 .map(field => valid[field])
                 .every(e => !!e);
         },
-        reset: () => set(() => ({
-            values: getInitialValues(),
-            errors: getInitialErrors(),
-            valid: getInitialValidFlags(),
-        })),
+        reset: () => {
+            set(({ initialValues }) => ({
+                values: { ...initialValues },
+                errors: getInitialErrors(),
+            }));
+            get().validate(true);
+        },
         values: getInitialValues(),
         errors: getInitialErrors(),
+        initialValues: getInitialValues(),
         valid: getInitialValidFlags(),
         onBlur: (field) => get().validate(false, [field]),
         onChange: (fieldValues) => {
@@ -59,6 +62,9 @@ export const createFormValidator = (form, settings) => {
             [field]: {
                 onBlur: () => get().onBlur(field),
                 onChange: v => get().onChange({ [field]: v }),
+                get value() {
+                    return get().values[field];
+                }
             }
         }), {}),
         validate: (silent = true, include = []) => {
@@ -97,6 +103,28 @@ export const createFormValidator = (form, settings) => {
                     }
                 }
             }
+        },
+        setInitialValues: (values) => set(({ initialValues }) => ({
+            initialValues: {
+                ...initialValues,
+                ...values,
+            }
+        })),
+        hasModified: () => {
+            const { values, initialValues } = get();
+            return !Object
+                .keys(values)
+                .map(field => values[field] == initialValues[field])
+                .every(isInitial => isInitial);
+        },
+        setValues: (newValues) => {
+            set(({ values }) => ({
+                values: {
+                    ...values,
+                    ...newValues,
+                }
+            }));
+            get().validate(true, Object.keys(newValues));
         }
     }));
 };

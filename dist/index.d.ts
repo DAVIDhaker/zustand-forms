@@ -4,6 +4,7 @@ import { FormFieldValidator } from "./validators";
 type FormBindMetaType = {
     onBlur: () => void;
     onChange: (to: any) => void;
+    get value(): string;
 };
 type FormBindType<T> = {
     [key in keyof T]: FormBindMetaType;
@@ -24,6 +25,7 @@ type FormType<T> = {
     reset: () => void;
     bind: FormBindType<T>;
     values: FormValuesType<T>;
+    initialValues: FormValuesType<T>;
     errors: FormErrorsType<T>;
     valid: FormValidFlagsType<T>;
     /**
@@ -47,6 +49,23 @@ type FormType<T> = {
     onChange: (fieldValue: {
         [K in keyof Partial<T>]: string;
     }) => void;
+    /**
+     * Update the initial values of form
+     *
+     * @param initialValues Part or all initial values
+     */
+    setInitialValues: (initialValues: Partial<FormValuesType<T>>) => void;
+    /**
+     * Has form modified
+     *
+     * This method compares values and initial values and if it's
+     * equals - return true, else - false
+     */
+    hasModified: () => boolean;
+    /**
+     * Set form values
+     */
+    setValues: (values: Partial<FormValuesType<T>>) => void;
 };
 type FormCreatorArgs<T> = {
     [key in keyof T]: {

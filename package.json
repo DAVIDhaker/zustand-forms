@@ -1,6 +1,6 @@
 {
   "name": "zustand-forms",
-  "version": "0.2.3.1",
+  "version": "1.0.0",
   "description": "Form validator for Zustand",
   "scripts": {
     "build": "npx tsc"
@@ -36,9 +36,9 @@
   "author": "Mr. DAVIDhaker",
   "license": "MIT",
   "dependencies": {
-    "zustand": "^3.0.0"
+    "zustand": "*"
   },
   "devDependencies": {
-    "typescript": "^4.5.2"
+    "typescript": ">=4.5.2"
   }
 }

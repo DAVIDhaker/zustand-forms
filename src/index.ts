@@ -6,6 +6,7 @@ import {FormFieldValidator, requiredValidator} from "./validators";
 type FormBindMetaType = {
     onBlur: () => void
     onChange: (to: any) => void
+    get value(): string
 }
 
 type FormBindType<T> = {
@@ -34,7 +35,7 @@ type FormType<T> = {
     // Are form is valid
     isValid: () => boolean
 
-    // Reset the form to initial state
+    // Reset the form to the initial values
     reset: () => void
 
     // Methods to bind the form
@@ -42,6 +43,9 @@ type FormType<T> = {
 
     // Values of form
     values: FormValuesType<T>
+
+    // Initial values of the form
+    initialValues: FormValuesType<T>
 
     // Errors of form FIELD to FIRST ERROR dict
     errors: FormErrorsType<T>
@@ -70,6 +74,26 @@ type FormType<T> = {
      * @param fieldsValue Map of fields and new values
      */
     onChange: (fieldValue: {[K in keyof Partial<T>]: string}) => void
+
+    /**
+     * Update the initial values of form
+     *
+     * @param initialValues Part or all initial values
+     */
+    setInitialValues: (initialValues: Partial<FormValuesType<T>>) => void
+
+    /**
+     * Has form modified
+     *
+     * This method compares values and initial values and if it's
+     * equals - return true, else - false
+     */
+    hasModified: () => boolean
+
+    /**
+     * Set form values
+     */
+    setValues: (values: Partial<FormValuesType<T>>) => void
 }
 
 
@@ -157,15 +181,20 @@ export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, 
                 .every(e => !!e)
         },
 
-        reset: () => set(() => ({
-            values: getInitialValues(),
-            errors: getInitialErrors(),
-            valid: getInitialValidFlags(),
-        })),
+        reset: () => {
+            set(({initialValues}) => ({
+                values: { ...initialValues },
+                errors: getInitialErrors(),
+            }))
+
+            get().validate(true)
+        },
 
         values: getInitialValues(),
 
         errors: getInitialErrors(),
+
+        initialValues: getInitialValues(),
 
         valid: getInitialValidFlags(),
 
@@ -185,6 +214,9 @@ export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, 
                 [field as keyof T]: {
                     onBlur: () => get().onBlur(field as keyof T),
                     onChange: v => get().onChange({ [field]: v} as {[K in keyof Partial<T>]: string}),
+                    get value(): string {
+                        return get().values[field as keyof T]
+                    }
                 } as FormBindMetaType
             }), {}) as FormBindType<T>,
 
@@ -233,6 +265,33 @@ export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, 
                     }
                 }
             }
+        },
+
+        setInitialValues: (values: Partial<FormValuesType<T>>) => set(({initialValues}) => ({
+            initialValues: {
+                ...initialValues,
+                ...values,
+            }
+        })),
+
+        hasModified: () => {
+            const {values, initialValues} = get()
+
+            return !Object
+                .keys(values)
+                .map(field => values[field as keyof T] == initialValues[field as keyof T])
+                .every(isInitial => isInitial)
+        },
+
+        setValues: (newValues: Partial<FormValuesType<T>>) => {
+            set(({values}) => ({
+                values: {
+                    ...values,
+                    ...newValues,
+                }
+            }))
+
+            get().validate(true, Object.keys(newValues) as Array<keyof T>)
         }
     }))
 }
