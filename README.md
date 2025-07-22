@@ -1,7 +1,4 @@
 # Zustand-based form validator
-
-Beta version of library is ready!
-
 For any reasons You can write me letter to me@davidhaker.ru
 
 # ✨ **Features**
@@ -43,7 +40,84 @@ For any reasons You can write me letter to me@davidhaker.ru
 
   
 
-# **📌** Sample:
+# Step by step sample
+
+### 0. Imagine form
+
+That contains 4 fields: name, email and password twice. Two password fields should be equal.
+
+### 1. Define validators
+
+```ts
+const nameValidator = (v) => v && v.length > 3 || 'Name should have 3 or more letters'
+
+const passwordsShouldBeEqualsValidator = (v, {values}) => v === values.password2 || 'Password should be equal'
+```
+
+### 2. Define form
+
+```tsx
+import { createFormValidator } from 'zustand-forms';
+import { emailValidator } from 'zustand-forms/validators'
+
+const useMyForm = createFormValidator<{
+    name: string
+    email: string
+    passowrd1: string
+    password2: string
+}>({
+    name: {
+        required: true
+    },
+    email: {
+    	required: true,
+        rules: [emailValidator],
+	},
+    password1: {
+        required: true,
+    },
+    password2: {
+        required: true,
+        rules: [passwordsShouldBeEqualsValidator],
+    },
+})
+```
+
+### 3. Use form validator
+
+```tsx
+export const MyFormComponent: FC = () => {
+    const {
+        bind,
+        isValid,
+        errors,
+    } = useMyForm();
+    
+    return <form>
+        {errors.name && <label>{errors.name}</label>}
+    	<input placeholder="Name" {...bind.name}/>
+        
+        {errors.email && <label>{errors.email}</label>}
+    	<input placeholder="Email" {...bind.email}/>
+        
+        {errors.password1 && <label>{errors.password1}</label>}
+    	<input placeholder="Password" {...bind.password1}/>
+        
+        {errors.password2 && <label>{errors.password2}</label>}
+    	<input placeholder="Repeat password" {...bind.password2}/>
+        
+        <input type="submit" disabled={!isValid()}/>
+    </form>
+}
+```
+
+
+
+
+
+# More samples:
+
+# **📌** Complex sample:
 
 ```typescript jsx
 // Custom validators
@@ -133,14 +207,40 @@ const AnyComponent = () => {
 
 
 
-# 📋 TODO
+# **📌** Validation across multiple fields:
+
+```tsx
+const passwordsShouldBeEqualsValidator = (v, {values}) => v === values.password2 || 'Password should be equal'
+
+export const useMyNiceForm = createFormValidator<{
+    password1: string
+    password2: string
+}>({
+    password1: {
+        required: true,
+    },
+    password2: {
+        required: true,
+        rules: [passwordsShouldBeEqualsValidator],
+    },
+})
+```
+
+
+
+# 📋 TO DO
+
+- [ ] Add predefined validators
+  - [ ] Validate string length
+  - [ ] Validate number - is greater or is lower
+  - [ ] Validate date - in range, greater, lower
+  - [ ] Password strength validation1
 
 - [ ] Tests coming soon!
 - [ ] Make docs more obviously
 - [ ] Nice obviously examples and use cases
 - [ ] Performance tests
 - [ ] Validation modes (on change, on blur, or combined)
-- [ ] Form level validators / passing form context to validators (check across multiple fields, like passord2 != password1)
 - [ ] I18n for custom validators (for cases, when app are multilingual)
 - [ ] Customizable binding interface (For passing `{...bind.yourField}` to element props to completely bind it to the form) - reason: different UI KIT's have different props names, in one place - `onChange`, in other just `change` prop of `<Input/>` component.
 

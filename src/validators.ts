@@ -1,7 +1,5 @@
 import {_} from "./utils";
-
-export type FormFieldValidatorResult = true | string
-export type FormFieldValidator = (v: string) => FormFieldValidatorResult
+import {FormFieldValidatorResult} from "./types";
 
 
 export function requiredValidator(v: string): FormFieldValidatorResult {

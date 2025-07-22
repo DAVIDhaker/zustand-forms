@@ -1,4 +1,3 @@
-export type FormFieldValidatorResult = true | string;
-export type FormFieldValidator = (v: string) => FormFieldValidatorResult;
+import { FormFieldValidatorResult } from "./types";
 export declare function requiredValidator(v: string): FormFieldValidatorResult;
 export declare function emailValidator(v: string): FormFieldValidatorResult;

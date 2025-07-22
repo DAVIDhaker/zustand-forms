@@ -1,135 +1,16 @@
 import {create, UseBoundStore, StoreApi} from "zustand";
 import {AVAILABLE_LOCALES, Locale} from "./locale/type";
-import {FormFieldValidator, requiredValidator} from "./validators";
-
-
-type FormBindMetaType = {
-    onBlur: () => void
-    onChange: (to: any) => void
-    get value(): string
-}
-
-type FormBindType<T> = {
-    [key in keyof T]: FormBindMetaType
-}
-
-type FormValuesType<T> = {
-    [key in keyof T]: string
-}
-
-type FormErrorsType<T> = {
-    [key in keyof T]: string | null
-}
-
-type FormValidFlagsType<T> = {
-    [key in keyof T]: boolean
-}
-
-type FormType<T> = {
-    // Locale language (by default - current browser locale)
-    locale: Locale;
-
-    // Change locale of current form
-    setLocale: (locale: Locale) => void;
-
-    // Are form is valid
-    isValid: () => boolean
-
-    // Reset the form to the initial values
-    reset: () => void
-
-    // Methods to bind the form
-    bind: FormBindType<T>
-
-    // Values of form
-    values: FormValuesType<T>
-
-    // Initial values of the form
-    initialValues: FormValuesType<T>
-
-    // Errors of form FIELD to FIRST ERROR dict
-    errors: FormErrorsType<T>
-
-    // Per field "is valid" flag (valid.FIELD)
-    valid: FormValidFlagsType<T>
-
-    /**
-     * Run form validation
-     *
-     * @param silent Don't emit errors (to field messages)
-     * @param include Validate only picked fields
-     */
-    validate: (silent?: boolean, include?: Array<keyof T>) => void
-
-    /**
-     * Blur event listener
-     *
-     * @param field Field name (as passed in form definition)
-     */
-    onBlur: (field: keyof T) => void
-
-    /**
-     * Change acceptor
-     *
-     * @param fieldsValue Map of fields and new values
-     */
-    onChange: (fieldValue: {[K in keyof Partial<T>]: string}) => void
-
-    /**
-     * Update the initial values of form
-     *
-     * @param initialValues Part or all initial values
-     */
-    setInitialValues: (initialValues: Partial<FormValuesType<T>>) => void
-
-    /**
-     * Has form modified
-     *
-     * This method compares values and initial values and if it's
-     * equals - return true, else - false
-     */
-    hasModified: () => boolean
-
-    /**
-     * Set form values
-     */
-    setValues: (values: Partial<FormValuesType<T>>) => void
-}
-
-
-type FormCreatorArgs<T> = {
-    [key in keyof T]: {
-        // Are field is required
-        required: boolean
-
-        // Set of rules for field validation
-        rules?: FormFieldValidator[],
-
-        // Initial value of field when form reset/init
-        initialValue?: any,
-    }
-}
-
-// todo Validation mode
-// type ValidationTrigger = 'onchange' | 'onblur'
-// type ValidationTriggersSettingType = {
-//     /**
-//      * Form validation triggers
-//      *
-//      * onchange - validate on any input or blur (default)
-//      * onblur - validate only when any field has blured
-//      */
-//     validationTriggers?: ValidationTrigger[]
-// }
-
-
-
-type FormSettingsType = { // ValidationTriggersSettingType &
-    /**
-     * Locale of the form (default - as browser language)
-     */
-    locale?: Locale
-}
+import {requiredValidator} from "./validators";
+import {
+    FormBindMetaType,
+    FormBindType,
+    FormCreatorArgs,
+    FormErrorsType, FormFieldValidator,
+    FormSettingsType,
+    FormType,
+    FormValidFlagsType,
+    FormValuesType,
+} from './types'
 
 
 /**
@@ -229,7 +110,7 @@ export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, 
                 }
 
                 // region Collect validators for field
-                let validators = []
+                let validators: FormFieldValidator<T>[] = []
 
                 if (form[field as keyof T].required)
                     validators.push(requiredValidator)
@@ -243,8 +124,8 @@ export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, 
                 if (validators.length > 0) {
                     let fieldHasError = false
 
-                    for (let validator of validators!) {
-                        let validationResult = validator.call(this, values[field as keyof T])
+                    for (let validator of validators) {
+                        let validationResult = validator(values[field as keyof T], get())
 
                         if (validationResult !== true) {
                             fieldHasError = true
@@ -253,6 +134,7 @@ export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, 
                                 valid: { ...valid, [field]: false},
                                 errors: { ...errors, [field]: silent ? null : validationResult}
                             }))
+
                             break
                         }
                     }

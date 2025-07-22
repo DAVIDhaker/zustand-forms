@@ -85,7 +85,7 @@ export const createFormValidator = (form, settings) => {
                 if (validators.length > 0) {
                     let fieldHasError = false;
                     for (let validator of validators) {
-                        let validationResult = validator.call(this, values[field]);
+                        let validationResult = validator(values[field], get());
                         if (validationResult !== true) {
                             fieldHasError = true;
                             set(({ valid, errors }) => ({
