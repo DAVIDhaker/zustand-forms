@@ -1,6 +1,6 @@
 import { Locale } from "./locale/type";
 export type FormFieldValidatorResult = true | string;
-export type FormFieldValidator<T> = (v: string, form: FormType<T>) => FormFieldValidatorResult;
+export type FormFieldValidator<T> = (v: any, form: FormType<T>) => FormFieldValidatorResult;
 export type FormBindMetaType = {
     onBlur: () => void;
     onChange: (to: any) => void;
@@ -80,3 +80,4 @@ export type FormSettingsType = {
      */
     locale?: Locale;
 };
+//# sourceMappingURL=types.d.ts.map

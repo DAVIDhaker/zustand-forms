@@ -13,13 +13,15 @@ import {
 } from './types'
 
 
+export type FormValidatorType<T> = UseBoundStore<StoreApi<FormType<T>>>
+
 /**
  * Generate form validation zustand store
  *
  * @param form Form validation definition
  * @param settings Settings for form
  */
-export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, settings?: FormSettingsType): UseBoundStore<StoreApi<FormType<T>>> => {
+export const createFormValidator = <T extends object>(form: FormCreatorArgs<T>, settings?: FormSettingsType): FormValidatorType<T> => {
     let locale: Locale = (settings?.locale || navigator?.language?.split('-')[0] || 'en') as Locale
 
     if (AVAILABLE_LOCALES.indexOf(locale) === -1)

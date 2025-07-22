@@ -4,3 +4,4 @@ import { Localization } from "./locale/type";
  * @param alias
  */
 export declare function _(alias: keyof Localization): string;
+//# sourceMappingURL=utils.d.ts.map

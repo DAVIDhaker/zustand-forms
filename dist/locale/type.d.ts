@@ -5,3 +5,4 @@ export type Localization = {
 import * as locales from './';
 export type Locale = keyof typeof locales;
 export declare const AVAILABLE_LOCALES: string[];
+//# sourceMappingURL=type.d.ts.map
