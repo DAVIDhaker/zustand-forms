@@ -105,8 +105,8 @@ export type FormType<T> = {
 
 export type FormCreatorArgs<T> = {
     [key in keyof T]: {
-        // Are field is required
-        required: boolean
+        // Are field is required (default - false)
+        required?: boolean
 
         // Set of rules for field validation
         rules?: FormFieldValidator<T>[],
